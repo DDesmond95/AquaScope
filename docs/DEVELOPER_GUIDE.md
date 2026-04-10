@@ -32,18 +32,20 @@ This component handles the rendering of:
 
 ## Deployment to GitHub Pages
 
-The project uses `next export` to generate a static site.
-1. Ensure `next.config.ts` has `output: 'export'`.
-2. The GitHub Action `.github/workflows/deploy.yml` handles the build and deployment.
-3. **IMPORTANT**: If you are deploying to a subpath (e.g., `https://<username>.github.io/<repo-name>/`), you **MUST** update `next.config.ts` to include the `basePath`:
+The project is pre-configured for deployment to GitHub Pages at `https://ddesmond95.github.io/AquaScope/`.
+
+1. **Configuration**: `next.config.ts` has been updated with:
    ```typescript
    const nextConfig: NextConfig = {
      output: 'export',
-     basePath: '/<repo-name>',
+     basePath: '/AquaScope',
+     assetPrefix: '/AquaScope',
+     trailingSlash: true,
      // ...
    };
    ```
-   Failure to do this will cause CSS and JS files to fail to load (404 errors).
+2. **Repository Name**: If you rename your repository, you **MUST** update both `basePath` and `assetPrefix` in `next.config.ts` to match the new repository name.
+3. **Workflow**: The GitHub Action `.github/workflows/deploy.yml` handles the build and deployment automatically on every push to `main`.
 
 ## Mock Data
 Currently, land parcels and infrastructure are provided as mock GeoJSON in `components/FloodMap.tsx`. In a production environment, these should be fetched from a real GIS API (e.g., ArcGIS or a custom GeoServer).
