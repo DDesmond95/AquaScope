@@ -1,0 +1,5 @@
+{
+  "name": "AquaScope Kuching",
+  "description": "Interactive flood risk visualization tool focused on Kuching, Sarawak, simulating the impact of sea level rise on local infrastructure.",
+  "requestFramePermissions": ["geolocation"]
+}
