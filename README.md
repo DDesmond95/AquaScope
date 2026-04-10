@@ -1,20 +1,55 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# AquaScope Kuching
 
-# Run and deploy your AI Studio app
+AquaScope Kuching is a high-precision flood simulation and land analysis tool tailored for the unique geography of Kuching, Sarawak. It combines global elevation data with local land parcel information (LASIS) and hydraulic infrastructure mapping to provide a comprehensive view of flood risks.
 
-This contains everything you need to run your app locally.
+## Features
 
-View your app in AI Studio: https://ai.studio/apps/7f420dc3-60ec-4355-8a85-e1a1e22eabfe
+- **High-Precision Flood Simulation**: Visualize sea level rise and tide influence from 0m to 60m.
+- **Google Maps Integration**: Switch between Street, Satellite, Terrain, and Hybrid views.
+- **LASIS Land Parcels**: Interactive land plot boundaries with title types and lot numbers.
+- **Hydraulic Infrastructure**: Mapping of major rivers, monsoon drains, and flood control barrages.
+- **Property Market Integration**: Browse real estate listings with integrated flood risk analysis.
+- **Live News Feed**: Stay updated with land and housing news from official Sarawak sources.
 
-## Run Locally
+## Getting Started
 
-**Prerequisites:**  Node.js
+### Prerequisites
 
+- Node.js 18+
+- npm or yarn
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/your-username/aquascope-kuching.git
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Run the development server:
+   ```bash
+   npm run dev
+   ```
+4. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## Deployment
+
+This project is configured for easy deployment to **GitHub Pages**.
+
+1. Update `next.config.ts` with your repository name if using a project page.
+2. Push to the `main` branch.
+3. The GitHub Action will automatically build and deploy the site.
+
+## Data Sources
+
+- **Elevation**: Open-Elevation API
+- **Flood Data**: Firetree.net
+- **Map Tiles**: Google Maps API
+- **Land Info**: Sarawak Land and Survey Dept (LASIS)
+- **News**: DayakDaily, Land & Survey Dept
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
