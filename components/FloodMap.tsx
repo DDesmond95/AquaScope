@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { useMap } from 'react-leaflet';
 import * as turf from '@turf/turf';
@@ -29,6 +29,7 @@ interface FloodMapProps {
     isSubmerged: boolean;
     parcel?: { id: string; title: string; zone: string; area: string } | null;
   }) => void;
+  userLocation?: [number, number] | null;
 }
 
 // Helper component to update map view and handle events
@@ -150,9 +151,30 @@ export default function FloodMap({
   baseLayer = 'streets',
   showLandParcels = false,
   showInfrastructure = false,
-  onLocationSelect
+  onLocationSelect,
+  userLocation
 }: FloodMapProps) {
   const floodTileUrl = `https://flood.firetree.net/solidtile/m_${floodHeight}/x_{x}/y_{y}/z_{z}`;
+
+  const [L, setL] = useState<any>(null);
+
+  useEffect(() => {
+    import('leaflet').then((leaflet) => {
+      setL(leaflet);
+    });
+  }, []);
+
+  const beaconIcon = L ? L.divIcon({
+    className: 'user-beacon-container',
+    html: `
+      <div class="user-beacon">
+        <div class="user-beacon-pulse"></div>
+        <div class="user-beacon-dot"></div>
+      </div>
+    `,
+    iconSize: [20, 20],
+    iconAnchor: [10, 10]
+  }) : null;
 
   // Mock Infrastructure Data
   const mockInfrastructure: any = {
@@ -372,6 +394,15 @@ export default function FloodMap({
             style={parcelStyle}
             onEachFeature={onEachParcel}
           />
+        )}
+
+        {/* User Location Beacon */}
+        {userLocation && beaconIcon && (
+          <Marker position={userLocation} icon={beaconIcon}>
+            <Popup>
+              <div className="text-xs font-bold">You are here</div>
+            </Popup>
+          </Marker>
         )}
       </MapContainer>
     </div>

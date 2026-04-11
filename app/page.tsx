@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
@@ -56,6 +56,49 @@ export default function Home() {
   const [mapCenter, setMapCenter] = useState<[number, number]>([1.5533, 110.3592]);
   const [mapZoom, setMapZoom] = useState(12);
   const [isLocating, setIsLocating] = useState(false);
+  const [userLocation, setUserLocation] = useState<[number, number] | null>(null);
+  const [isTracking, setIsTracking] = useState(false);
+  const watchIdRef = useRef<number | null>(null);
+  const isFirstFixRef = useRef(true);
+
+  useEffect(() => {
+    if (isTracking) {
+      if (!navigator.geolocation) {
+        setTimeout(() => setIsTracking(false), 0);
+        return;
+      }
+
+      watchIdRef.current = navigator.geolocation.watchPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setUserLocation([latitude, longitude]);
+          
+          if (isFirstFixRef.current) {
+            setMapCenter([latitude, longitude]);
+            setMapZoom(15);
+            isFirstFixRef.current = false;
+          }
+        },
+        (error) => {
+          console.error('Tracking error:', error);
+          setTimeout(() => setIsTracking(false), 0);
+        },
+        { enableHighAccuracy: true }
+      );
+    } else {
+      isFirstFixRef.current = true;
+      if (watchIdRef.current !== null) {
+        navigator.geolocation.clearWatch(watchIdRef.current);
+        watchIdRef.current = null;
+      }
+    }
+
+    return () => {
+      if (watchIdRef.current !== null) {
+        navigator.geolocation.clearWatch(watchIdRef.current);
+      }
+    };
+  }, [isTracking]);
 
   const getImpactLevel = (height: number) => {
     if (height <= 2) return { label: 'Low', color: 'bg-blue-500' };
@@ -72,22 +115,17 @@ export default function Home() {
   };
 
   const handleLocateMe = () => {
+    if (isTracking) {
+      setIsTracking(false);
+      setUserLocation(null);
+      return;
+    }
+
     if (!navigator.geolocation) {
       return;
     }
 
-    setIsLocating(true);
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        setMapCenter([position.coords.latitude, position.coords.longitude]);
-        setMapZoom(13);
-        setIsLocating(false);
-      },
-      (error) => {
-        console.error('Error getting location:', error);
-        setIsLocating(false);
-      }
-    );
+    setIsTracking(true);
   };
 
   return (
@@ -548,6 +586,7 @@ export default function Home() {
           showLandParcels={showLandParcels}
           showInfrastructure={showInfrastructure}
           onLocationSelect={setSelectedLocation}
+          userLocation={userLocation}
         />
 
         {/* Floating Info Box */}
@@ -622,11 +661,14 @@ export default function Home() {
         <div className="absolute bottom-32 lg:bottom-24 right-3 lg:right-6 z-[1000]">
           <Button
             onClick={handleLocateMe}
-            disabled={isLocating}
-            className="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-white shadow-xl border-none text-slate-600 hover:text-blue-600 hover:bg-blue-50 transition-all p-0 flex items-center justify-center"
-            title="Show my location"
+            className={`w-10 h-10 lg:w-12 lg:h-12 rounded-full shadow-xl border-none transition-all p-0 flex items-center justify-center ${
+              isTracking 
+                ? 'bg-blue-600 text-white hover:bg-blue-700' 
+                : 'bg-white text-slate-600 hover:text-blue-600 hover:bg-blue-50'
+            }`}
+            title={isTracking ? "Stop tracking" : "Show my location"}
           >
-            <Locate size={20} className={`lg:w-6 lg:h-6 ${isLocating ? 'animate-spin' : ''}`} />
+            <Locate size={20} className={`lg:w-6 lg:h-6 ${isTracking ? 'animate-pulse' : ''}`} />
           </Button>
         </div>
       </div>
