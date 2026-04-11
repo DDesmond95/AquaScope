@@ -617,6 +617,18 @@ export default function Home() {
             Google Maps
           </Badge>
         </div>
+
+        {/* Floating Locate Button (Google Maps Style) */}
+        <div className="absolute bottom-32 lg:bottom-24 right-3 lg:right-6 z-[1000]">
+          <Button
+            onClick={handleLocateMe}
+            disabled={isLocating}
+            className="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-white shadow-xl border-none text-slate-600 hover:text-blue-600 hover:bg-blue-50 transition-all p-0 flex items-center justify-center"
+            title="Show my location"
+          >
+            <Locate size={20} className={`lg:w-6 lg:h-6 ${isLocating ? 'animate-spin' : ''}`} />
+          </Button>
+        </div>
       </div>
     </main>
   );
