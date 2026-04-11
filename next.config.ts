@@ -1,9 +1,11 @@
 import type {NextConfig} from 'next';
 
+const isProd = process.env.NODE_ENV === 'production';
+
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  basePath: '/AquaScope',
-  assetPrefix: '/AquaScope',
+  basePath: isProd ? '/AquaScope' : '',
+  assetPrefix: isProd ? '/AquaScope' : '',
   trailingSlash: true,
   eslint: {
     ignoreDuringBuilds: true,

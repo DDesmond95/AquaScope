@@ -75,7 +75,7 @@ export default function Home() {
           
           if (isFirstFixRef.current) {
             setMapCenter([latitude, longitude]);
-            setMapZoom(15);
+            setMapZoom(18);
             isFirstFixRef.current = false;
           }
         },
