@@ -19,7 +19,9 @@ import {
   Landmark,
   ShoppingBag,
   Newspaper,
-  Search
+  Search,
+  Menu,
+  X
 } from 'lucide-react';
 import { Slider } from '@/components/ui/slider';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -40,6 +42,7 @@ export default function Home() {
   const [showLandParcels, setShowLandParcels] = useState(false);
   const [showInfrastructure, setShowInfrastructure] = useState(false);
   const [activeTab, setActiveTab] = useState<'simulation' | 'market' | 'news'>('simulation');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   
   const [selectedLocation, setSelectedLocation] = useState<{
     lat: number;
@@ -88,16 +91,49 @@ export default function Home() {
   };
 
   return (
-    <main className="flex h-screen w-full bg-[#f8f9fa] text-slate-900 font-sans overflow-hidden">
+    <main className="flex h-screen w-full bg-[#f8f9fa] text-slate-900 font-sans overflow-hidden relative">
+      {/* Mobile Toggle Button */}
+      <button 
+        onClick={() => setIsSidebarOpen(true)}
+        className="lg:hidden absolute top-6 left-6 z-[1001] p-3 bg-white shadow-lg rounded-full text-slate-600 hover:text-blue-600 transition-colors"
+      >
+        <Menu size={24} />
+      </button>
+
+      {/* Mobile Overlay */}
+      <AnimatePresence>
+        {isSidebarOpen && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsSidebarOpen(false)}
+            className="lg:hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[1002]"
+          />
+        )}
+      </AnimatePresence>
+
       {/* Sidebar */}
-      <div className="w-80 h-full border-r border-slate-200 bg-white flex flex-col shadow-sm z-10">
-        <div className="p-6">
-          <div className="flex items-center gap-2 mb-1">
+      <div className={`
+        fixed lg:relative inset-y-0 left-0 w-80 h-full border-r border-slate-200 bg-white flex flex-col shadow-sm z-[1003]
+        transform transition-transform duration-300 ease-in-out
+        ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+      `}>
+        <div className="p-6 flex items-center justify-between">
+          <div className="flex items-center gap-2">
             <div className="p-2 bg-blue-600 rounded-lg text-white">
               <Waves size={20} />
             </div>
             <h1 className="text-xl font-bold tracking-tight text-slate-900">AquaScope Kuching</h1>
           </div>
+          <button 
+            onClick={() => setIsSidebarOpen(false)}
+            className="lg:hidden p-2 text-slate-400 hover:text-slate-600"
+          >
+            <X size={20} />
+          </button>
+        </div>
+        <div className="px-6 pb-2">
           <p className="text-xs text-slate-500 font-medium uppercase tracking-wider">Sarawak Flood Risk</p>
         </div>
 
@@ -515,18 +551,17 @@ export default function Home() {
         />
 
         {/* Floating Info Box */}
-        {/* Floating Info Box */}
-        <div className="absolute top-6 left-6 z-[1000] pointer-events-none">
-          <Card className="shadow-lg border-none bg-white/90 backdrop-blur-md p-3 pointer-events-auto">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-blue-50 rounded-full text-blue-600">
-                <CloudSun size={20} />
+        <div className="absolute top-24 lg:top-6 left-6 z-[1000] pointer-events-none">
+          <Card className="shadow-lg border-none bg-white/90 backdrop-blur-md p-2 lg:p-3 pointer-events-auto">
+            <div className="flex items-center gap-2 lg:gap-3">
+              <div className="p-1.5 lg:p-2 bg-blue-50 rounded-full text-blue-600">
+                <CloudSun size={16} className="lg:w-5 lg:h-5" />
               </div>
               <div>
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Kuching Weather</p>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-lg font-bold text-slate-800">28°C</span>
-                  <span className="text-xs text-slate-500 font-medium">Thunderstorms</span>
+                <p className="text-[8px] lg:text-[10px] font-bold text-slate-400 uppercase tracking-wider leading-none mb-0.5 lg:mb-1">Kuching Weather</p>
+                <div className="flex items-baseline gap-1.5 lg:gap-2">
+                  <span className="text-sm lg:text-lg font-bold text-slate-800 leading-none">28°C</span>
+                  <span className="text-[10px] lg:text-xs text-slate-500 font-medium leading-none">Thunderstorms</span>
                 </div>
               </div>
             </div>
@@ -539,30 +574,30 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 20 }}
-              className="absolute top-6 right-6 w-72 z-[1000]"
+              className="absolute top-6 right-6 w-64 lg:w-72 z-[1000]"
             >
               <Card className="shadow-xl border-none bg-white/90 backdrop-blur-md">
-                <div className="p-4 pb-2 flex flex-row items-center justify-between">
-                  <h3 className="text-sm font-bold flex items-center gap-2">
-                    <Info size={16} className="text-blue-600" />
+                <div className="p-3 lg:p-4 pb-1 lg:pb-2 flex flex-row items-center justify-between">
+                  <h3 className="text-xs lg:text-sm font-bold flex items-center gap-2">
+                    <Info size={14} className="text-blue-600 lg:w-4 lg:h-4" />
                     How it works
                   </h3>
                   <button 
                     onClick={() => setShowInfo(false)}
                     className="text-slate-400 hover:text-slate-600 transition-colors"
                   >
-                    <ChevronRight size={16} className="rotate-90" />
+                    <ChevronRight size={14} className="rotate-90 lg:w-4 lg:h-4" />
                   </button>
                 </div>
-                <CardContent className="text-[11px] leading-relaxed text-slate-600 space-y-2">
+                <CardContent className="text-[10px] lg:text-[11px] leading-relaxed text-slate-600 space-y-1.5 lg:space-y-2 p-3 lg:p-4 pt-0 lg:pt-0">
                   <p>
                     This simulation uses global elevation data to visualize the impact of sea level rise.
                   </p>
-                  <p>
+                  <p className="hidden lg:block">
                     The blue overlay represents areas that would be submerged at the selected height above current sea level.
                   </p>
-                  <div className="p-2 bg-blue-50 rounded border border-blue-100 text-blue-700 font-medium flex items-center gap-2">
-                    <AlertTriangle size={12} />
+                  <div className="p-1.5 lg:p-2 bg-blue-50 rounded border border-blue-100 text-blue-700 font-medium flex items-center gap-2">
+                    <AlertTriangle size={10} className="lg:w-3 lg:h-3" />
                     <span>Visual simulation only.</span>
                   </div>
                 </CardContent>
@@ -572,13 +607,13 @@ export default function Home() {
         </AnimatePresence>
 
         {/* Map Legend */}
-        <div className="absolute bottom-6 left-6 z-[1000] flex gap-2">
-          <Badge variant="outline" className="bg-white/80 backdrop-blur shadow-sm border-slate-200 text-slate-600 px-3 py-1">
-            <div className="w-3 h-3 rounded-full bg-blue-500/70 mr-2 border border-blue-600/30" />
+        <div className="absolute bottom-20 lg:bottom-6 left-6 z-[1000] flex flex-col lg:flex-row gap-2">
+          <Badge variant="outline" className="bg-white/80 backdrop-blur shadow-sm border-slate-200 text-slate-600 px-2 lg:px-3 py-1 text-[10px] lg:text-xs">
+            <div className="w-2 h-2 lg:w-3 lg:h-3 rounded-full bg-blue-500/70 mr-1.5 lg:mr-2 border border-blue-600/30" />
             Submerged Area
           </Badge>
-          <Badge variant="outline" className="bg-white/80 backdrop-blur shadow-sm border-slate-200 text-slate-600 px-3 py-1">
-            <MapIcon size={12} className="mr-2" />
+          <Badge variant="outline" className="bg-white/80 backdrop-blur shadow-sm border-slate-200 text-slate-600 px-2 lg:px-3 py-1 text-[10px] lg:text-xs">
+            <MapIcon size={10} className="mr-1.5 lg:mr-2 lg:w-3 lg:h-3" />
             Google Maps
           </Badge>
         </div>
